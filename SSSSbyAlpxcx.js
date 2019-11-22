@@ -115,22 +115,19 @@ function bitGroup(length){
 }
 
 function sd9(consoleSwitch=true,ogn=true,level=15){
-	//生成基本棋盘
 	{
 	this.arr = new Array(81);
 	this.cells = new Array(81);
 	this.ncache = new Array(729);
 	this.tcache = new Array(729);
 	this.d_or_t = new Array(27);
-  //生成统计数据
   this.tstat = 0;
   this.rnst = new Array(9);
   this.cnst = new Array(9);
   this.bnst = new Array(9);
 	if(ogn){
-		//数独本体
 		this.arr.fill(0);
-		//每个方格候选数的集合
+		//Recording candidates for each cell
 		autofill(this.cells,bitArray,9);
 		this.ncache.fill(true);
 		this.tcache.fill(false);
@@ -139,7 +136,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
     autofill(this.cnst,bitGroup,9);
     autofill(this.bnst,bitGroup,9);
 	}
-	//直接可以放置的数只有可能是naked/hidden single
 	this.nslist = new Array;
 	this.hslist = new Array;
 	this.ndlist = new Array;
@@ -161,11 +157,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 	this.isvalid=true;
 	this.issolved=false;
 	this.slvl=level;
-	//是否在解题时开启this.logs.push();
 	this.con=consoleSwitch;
 	this.logs = new Array;
-	//以下是为了避免执行过程中进行大量乘除运算消耗处理器时间
-	//知道对应的索引属于第几个九宫格
 	this.bpstn = [0,0,0,1,1,1,2,2,2,
 	              0,0,0,1,1,1,2,2,2,
 	              0,0,0,1,1,1,2,2,2,
@@ -175,7 +168,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 	              6,6,6,7,7,7,8,8,8,
 	              6,6,6,7,7,7,8,8,8,
 	              6,6,6,7,7,7,8,8,8];
-	//每个九宫格内的索引
 	this.bpjtn = [[0,1,2,9,10,11,18,19,20],
 	              [3,4,5,12,13,14,21,22,23],
 	              [6,7,8,15,16,17,24,25,26],
@@ -185,7 +177,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 	              [54,55,56,63,64,65,72,73,74],
 	              [57,58,59,66,67,68,75,76,77],
 	              [60,61,62,69,70,71,78,79,80]];
-	//知道对应索引在对应九宫格中的相对位置
 	this.bcnpj = [0,1,2,0,1,2,0,1,2,
 	              3,4,5,3,4,5,3,4,5,
 	              6,7,8,6,7,8,6,7,8,
@@ -276,17 +267,15 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		if(this.cells[pos].can==1&&!this.cells[pos].isfilled){
   			this.nslist.push([bittonum(this.cells[pos].v,9),pos]);
   		}
-  		//寻找隐性候选数对
+  		//Find hidden double
 			this.findHD(r,c,b,num);
-			//寻找显性候选数对
+  		//Find naked double
 			this.findND(r,c,b);
-			//寻找锁定候选数
+			//Find locked candidates
 			this.BLRD(r,c,b,num);
-			//寻找矩形匹配数
 			this.findXW(r,c,num);
 			this.findSSF(r,c,num);
 			this.findSF(r,c,num);
-			//寻找显性候选数组
 			this.findSNT(r,c,b);
 			this.findNT(r,c,b);
 			this.findHT(r,c,b,num);
@@ -396,7 +385,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			break;
   		}
   	}
-  	//检测一列中某数字的候选是否集中出现在同一个九宫格
   	if(cst.can==3||cst.can==2){
   		switch(0){
   			case cst.v&0770:
