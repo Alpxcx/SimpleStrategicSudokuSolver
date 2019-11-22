@@ -2507,6 +2507,15 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   	}
   }
   
+	this.isrltive = function(pos1,pos2){
+		var res=0;
+		var l=this.bpjtn.length;
+		if(Math.floor(pos1/l)==Math.floor(pos2/l)) res++;
+		if((pos1-pos2)%l==0) res+=2;
+		if(this.bpstn[pos1]==this.bpstn[pos2]) res+=4;
+		return res;
+	}
+  
 	this.cpy = function(){
 		var res = new sd9(false,false);
 		for(var i=0;i < 81;i++){
