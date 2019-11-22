@@ -254,9 +254,9 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
     	var b = this.bpstn[pos];
     	var bn = this.bcnpj[pos];
     	this.ncache[pos*9+num] = false;
-  		if (this.rnst[r].dcan(num,c)) this.hslist.push([num,this.rnst[r].hspos+9*r,"行"]);
-  		if (this.cnst[c].dcan(num,r)) this.hslist.push([num,this.cnst[c].hspos*9+c,"列"]);
-  		if(this.bnst[b].dcan(num,bn)) this.hslist.push([num,this.bpjtn[b][this.bnst[b].hspos],"宫"]);
+  		if (this.rnst[r].dcan(num,c)) this.hslist.push([num,this.rnst[r].hspos+9*r,"row"]);
+  		if (this.cnst[c].dcan(num,r)) this.hslist.push([num,this.cnst[c].hspos*9+c,"column"]);
+  		if(this.bnst[b].dcan(num,bn)) this.hslist.push([num,this.bpjtn[b][this.bnst[b].hspos],"block"]);
   		switch(this.cells[pos].can){
   			case 3:
   	  	this.d_or_t[r]++;
@@ -377,25 +377,21 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   	var rst=this.rnst[r].mem[num];
   	var cst=this.cnst[c].mem[num];
   	var bst=this.bnst[b].mem[num];
-  	//检测一行中某数字的候选是否集中出现在同一个九宫格
   	if(rst.can==3||rst.can==2){
   		switch(0){
   			case rst.v&0770:
   			var tb = this.bpstn[r*9];
   			if(rst.can == this.bnst[tb].mem[num].can) break;
-  			//this.logs.push("第"+r+"行对第"+tb+"宫的数字"+(num+1)+"宣称主权，该宫的该数字只能出现在该行");
   			this.claims.push([num,tb,(7 << 3*(r%3)),4,r]);
   			break;
   			case rst.v&0707:
   			var tb = this.bpstn[r*9]+1;
   			if(rst.can == this.bnst[tb].mem[num].can) break;
-  			//this.logs.push("第"+r+"行对第"+tb+"宫的数字"+(num+1)+"宣称主权，该宫的该数字只能出现在该行");
   			this.claims.push([num,tb,(7 << 3*(r%3)),4,r]);
   			break;
   			case rst.v&0077:
   			var tb = this.bpstn[r*9]+2;
   			if(rst.can == this.bnst[tb].mem[num].can) break;
-  			//this.logs.push("第"+r+"行对第"+tb+"宫的数字"+(num+1)+"宣称主权，该宫的该数字只能出现在该行");
   			this.claims.push([num,tb,(7 << 3*(r%3)),4,r]);
   			break;
   		}
@@ -406,19 +402,16 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			case cst.v&0770:
   			var tb = this.bpstn[c];
   		  if(cst.can == this.bnst[tb].mem[num].can) break;
-  			//this.logs.push("第"+c+"列对第"+tb+"宫的数字"+(num+1)+"宣称主权，该宫的该数字只能出现在该列");
   			this.claims.push([num,tb,(0111 << (c%3)),4,c])
   			break;
   			case cst.v&0707:
   			var tb = this.bpstn[c]+3;
   		  if(cst.can == this.bnst[tb].mem[num].can) break;
-  			//this.logs.push("第"+c+"列对第"+tb+"宫的数字"+(num+1)+"宣称主权，该宫的该数字只能出现在该列");
   			this.claims.push([num,tb,(0111 << (c%3)),4,c])
   			break;
   			case cst.v&0077:
   			var tb = this.bpstn[c]+6;
   		  if(cst.can == this.bnst[tb].mem[num].can) break;
-  			//this.logs.push("第"+c+"列对第"+tb+"宫的数字"+(num+1)+"宣称主权，该宫的该数字只能出现在该列");
   			this.claims.push([num,tb,(0111 << (c%3)),4,c])
   			break;
   		}
@@ -428,37 +421,31 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			case bst.v&0770:
   			var tr = b-b%3;
   		  if(bst.can == this.rnst[tr].mem[num].can) break;
-  			//this.logs.push("第"+b+"宫对第"+tr+"行的数字"+(num+1)+"宣称主权，该行的该数字只能出现在该宫");
   			this.claims.push([num,tr,(7 << 3*(b%3)),1]);
   			break;
   			case bst.v&0707:
   			var tr = b-b%3+1;
   		  if(bst.can == this.rnst[tr].mem[num].can) break;
-  			//this.logs.push("第"+b+"宫对第"+tr+"行的数字"+(num+1)+"宣称主权，该行的该数字只能出现在该宫");
   			this.claims.push([num,tr,(7 << 3*(b%3)),1,b]);
   			break;
   			case bst.v&0077:
   			var tr = b-b%3+2;
   		  if(bst.can == this.rnst[tr].mem[num].can) break;
-  			//this.logs.push("第"+b+"宫对第"+tr+"行的数字"+(num+1)+"宣称主权，该行的该数字只能出现在该宫");
   			this.claims.push([num,tr,(7 << 3*(b%3)),1],b);
   			break;
   			case bst.v&0666:
   			var tc = 3*(b%3);
   		  if(bst.can == this.cnst[tc].mem[num].can) break;
-  			//this.logs.push("第"+b+"宫对第"+tc+"列的数字"+(num+1)+"宣称主权，该列的该数字只能出现在该宫");
   			this.claims.push([num,tc,(7 << (b-b%3)),2],b);
   			break;
   			case bst.v&0555:
   			var tc = 3*(b%3)+1;
   		  if(bst.can == this.cnst[tc].mem[num].can) break;
-  			//this.logs.push("第"+b+"宫对第"+tc+"列的数字"+(num+1)+"宣称主权，该列的该数字只能出现在该宫");
   			this.claims.push([num,tc,(7 << (b-b%3)),2],b);
   			break;
   			case bst.v&0333:
   			var tc = 3*(b%3)+2;
   		  if(bst.can == this.cnst[tc].mem[num].can) break;
-  			//this.logs.push("第"+b+"宫对第"+tc+"列的数字"+(num+1)+"宣称主权，该列的该数字只能出现在该宫");
   			this.claims.push([num,tc,(7 << (b-b%3)),2],b);
   			break;
   		}
@@ -1502,7 +1489,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		if(tsdx.isvalid){
   			if(tsdx.issolved){
   				this.init(tsdx.arr);
-  				this.logs.push("往"+idxtocod(p1)+"填入数字"+(i+1)+"即可解开数独，因此应填入"+(i+1));
+  				this.logs.push(idxtocod(p1)+", "+(i+1)+", sudoku solved. Fill in this number.");
   				this.logs=this.logs.concat(tsdx.logs);
   				return true;
   			}
@@ -1514,7 +1501,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			if(tsdy.isvalid){
   				if(tsdy.issolved){
   					this.init(tsdy.arr);
-  				  this.logs.push("往"+idxtocod(p2)+"填入数字"+(i+1)+"即可解开数独，因此应填入"+(i+1));
+  				  this.logs.push(idxtocod(p2)+", "+(i+1)+", sudoku solved. Fill in this number.");
   				  this.logs=this.logs.concat(tsdy.logs);
   					return true;
   				}else{
@@ -1523,19 +1510,19 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
       					delp = Math.floor(j/9);
       					deln = j%9;
       					ret = true;
-      					this.logs.push("由于往"+idxtocod(p1)+" "+idxtocod(p2)+"填入数字"+(i+1)+"都可以删除"+idxtocod(delp)+"处的候选"+(deln+1)+"，因此删除该候选");
+      					this.logs.push("Because filling "+(i+1)+" in options "+idxtocod(p1)+" "+idxtocod(p2)+" both get "+(deln+1)+" at "+idxtocod(delp)+" deleted, it can be removed.");
       					this.delcan(deln,delp);
       				}
       			}
       			return ret;
   				}
   			}else{
-  				this.logs.push("往"+idxtocod(p2)+"填入数字"+(i+1)+"将造成数独崩溃，因此应在"+idxtocod(p1)+"填入");
+  				this.logs.push(idxtocod(p2)+", "+(i+1)+", sudoku failed. Place it at "+idxtocod(p1)+" instead.");
   		    this.place(i,p1);
   		    return true;
   			}
   		}else{
-  			this.logs.push("往"+idxtocod(p1)+"填入数字"+(i+1)+"将造成数独崩溃，因此应在"+idxtocod(p2)+"填入");
+  			this.logs.push(idxtocod(p1)+", "+(i+1)+", sudoku failed. Place it at "+idxtocod(p2)+" instead.");
   			this.place(i,p2);
   			return true;
   		}
@@ -1560,35 +1547,35 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		tny = bittonum(tsdx.cells[tryl].v&~(1 << tnx),9);
   		if(this.tcache[tryl*9+tny]&&this.tcache[tryl*9+tnx]) continue;
   		this.tcache[tryl*9+tnx]=true;
-  		this.logs.push("双选择尝试：尝试向"+idxtocod(tryl)+"填入"+(tnx+1));
+  		this.logs.push("Bi-value cell trial: try to fill "+(tnx+1)+" in "+idxtocod(tryl));
   		tsdx.place(tnx,tryl);
   		tsdx.solve();
   		this.dfscnt+=tsdx.dfscnt;
   		if(tsdx.issolved){
   			this.init(tsdx.arr);
-  			this.logs.push("往"+idxtocod(tryl)+"填入数字"+(tnx+1)+"即可解开数独，因此应填入"+(tnx+1));
+  			this.logs.push(idxtocod(tryl)+", "+(tnx+1)+", sudoku solved. Fill in this number.");
   			this.logs=this.logs.concat(tsdx.logs);
   			return true;
   		}else if(!tsdx.isvalid){
   			this.delcan(tnx,tryl);
-  			this.logs.push("往"+idxtocod(tryl)+"填入数字"+(tnx+1)+"之后数独无解，应删除该候选");
+  			this.logs.push(idxtocod(tryl)+", "+(tnx+1)+", sudoku failed. Delete this candidate.");
   			return true;
   		}else{
   			tsdy = this.cpy();
   			tsdy.slvl=14;
   			this.tcache[tryl*9+tny]=true;
-    		this.logs.push("双选择尝试：尝试向"+idxtocod(tryl)+"填入"+(tny+1));
+    		this.logs.push("Bi-value cell trial: try to fill "+(tny+1)+" in "+idxtocod(tryl));
     		tsdy.place(tny,tryl);
     		tsdy.solve();
     		this.dfscnt+=tsdy.dfscnt;
     		if(tsdy.issolved){
     			this.init(tsdy.arr);
-    			this.logs.push("往"+idxtocod(tryl)+"填入数字"+(tny+1)+"即可解开数独，因此应填入"+(tny+1));
+    			this.logs.push(idxtocod(tryl)+", "+(tny+1)+", sudoku solved. Fill in this number.");
   				this.logs=this.logs.concat(tsdy.logs);
     			return true;
     		}else if(!tsdy.isvalid){
     			this.delcan(tny,tryl);
-    			this.logs.push("往"+idxtocod(tryl)+"填入数字"+(tny+1)+"之后数独无解，应删除该候选");
+    			this.logs.push(idxtocod(tryl)+", "+(tny+1)+", sudoku failed. Delete this candidate.");
     			return true;
     		}else{
     			if(this.tcache[tryl*9+tny]||this.tcache[tryl*9+tnx]) continue;
@@ -1597,7 +1584,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
     					delp = Math.floor(j/9);
     					deln = j%9;
     					ret = true;
-    					this.logs.push("由于往"+idxtocod(tryl)+"填入所有的两个候选都可以删除"+idxtocod(delp)+"处的候选"+(deln+1)+"，因此删除该候选");
+    					this.logs.push("Because by filling in both candidates at "+idxtocod(tryl)+", candidate "+(deln+1)+" at "+idxtocod(delp)+" is deleted, it can be removed.");
     					this.delcan(deln,delp);
     				}
     			}
@@ -1651,7 +1638,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   							}
   						}
   						if(tret){
-  							this.logs.push("鱼雷战术v1：起始宫："+(i+1)+"，目标格："+idxtocod(px)+" "+idxtocod(py)+"，数组"+tstr);
+  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
   							for(var jx=0;jx < 3;jx++){
   								if(jx===tn) continue;
   								tp=bs+jx;
@@ -1669,7 +1656,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
             								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -1711,7 +1698,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
             								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -1774,7 +1761,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   							}
   						}
   						if(tret){
-  							this.logs.push("鱼雷战术v1：起始宫："+(i+1)+"，目标格："+idxtocod(px)+" "+idxtocod(py)+"，数组"+tstr);
+  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
   							for(var jx=0;jx < 3;jx++){
   								if(jx===tn) continue;
   								tp=bs+jx;
@@ -1792,7 +1779,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
             								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -1834,7 +1821,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
             								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -1897,7 +1884,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   							}
   						}
   						if(tret){
-  							this.logs.push("鱼雷战术v1：起始宫："+(i+1)+"，目标格："+idxtocod(px)+" "+idxtocod(py)+"，数组"+tstr);
+  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
   							for(var jx=0;jx < 3;jx++){
   								if(jx===tn) continue;
   								tp=bs+jx;
@@ -2016,7 +2003,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   							}
   						}
   						if(tret){
-  							this.logs.push("鱼雷战术v1：起始宫："+(i+1)+"，目标格："+idxtocod(px)+" "+idxtocod(py)+"，数组"+tstr);
+  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
   							for(var jx=0;jx < 3;jx++){
   								if(jx===tn) continue;
   								tp=jx*3+bs;
@@ -2034,7 +2021,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
   													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -2050,7 +2037,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   															for(var kz=0;kz < 9;kz++){
   																if((1 << kz)&ebit){
   																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(ky+1)+"C"+(kx+1)+"处的"+(kz+1));
+  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
   																	}
   																}
   															}
@@ -2076,7 +2063,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
   													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -2092,7 +2079,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   															for(var kz=0;kz < 9;kz++){
   																if((1 << kz)&ebit){
   																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(ky+1)+"C"+(kx+1)+"处的"+(kz+1));
+  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
   																	}
   																}
   															}
@@ -2135,7 +2122,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   							}
   						}
   						if(tret){
-  							this.logs.push("鱼雷战术v1：起始宫："+(i+1)+"，目标格："+idxtocod(px)+" "+idxtocod(py)+"，数组"+tstr);
+  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
   							for(var jx=0;jx < 3;jx++){
   								if(jx===tn) continue;
   								tp=jx*3+bs;
@@ -2153,7 +2140,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
   													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -2169,7 +2156,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   															for(var kz=0;kz < 9;kz++){
   																if((1 << kz)&ebit){
   																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(ky+1)+"C"+(kx+1)+"处的"+(kz+1));
+  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
   																	}
   																}
   															}
@@ -2195,7 +2182,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
   													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -2211,7 +2198,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   															for(var kz=0;kz < 9;kz++){
   																if((1 << kz)&ebit){
   																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(ky+1)+"C"+(kx+1)+"处的"+(kz+1));
+  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
   																	}
   																}
   															}
@@ -2254,7 +2241,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   							}
   						}
   						if(tret){
-  							this.logs.push("鱼雷战术v1：起始宫："+(i+1)+"，目标格："+idxtocod(px)+" "+idxtocod(py)+"，数组"+tstr);
+  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
   							for(var jx=0;jx < 3;jx++){
   								if(jx===tn) continue;
   								tp=jx*3+bs;
@@ -2272,7 +2259,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
   													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -2288,7 +2275,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   															for(var kz=0;kz < 9;kz++){
   																if((1 << kz)&ebit){
   																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(ky+1)+"C"+(kx+1)+"处的"+(kz+1));
+  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
   																	}
   																}
   															}
@@ -2314,7 +2301,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
             									this.delcan(k,pu);
             									this.delcan(k,pv);
             								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
   													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
   													for(var kx=0;kx < 9;kx++){
   														if(kx===3*(i%3)){
@@ -2330,7 +2317,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   															for(var kz=0;kz < 9;kz++){
   																if((1 << kz)&ebit){
   																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(ky+1)+"C"+(kx+1)+"处的"+(kz+1));
+  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
   																	}
   																}
   															}
@@ -2353,39 +2340,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   	return false;
   }
   
-  this.dfsx = function(){
-  	if(!this.isvalid) return false;
-  	if(this.issolved) return false;
-  	var tsd;
-  	for(var i=0;i < 81;i++){
-  		if(this.cells[i].can!=3) continue;
-  		for(var j=0;j < 9;j++){
-  			if(this.bnst[this.bpstn[i]].mem[j].isfilled) continue;
-  			if((this.cells[i].v&(1 << j))===0) continue;
-  			if(this.tcache[i*9+j]) continue;
-  			this.tcache[i*9+j] = true;
-  			tsd = this.cpy();
-  			tsd.slvl=14;
-  			this.logs.push("DFS启动：试图在"+i+"填入"+(j+1));
-  			tsd.place(j,i);
-  			tsd.solve();
-  			this.dfscnt+=tsd.dfscnt;
-  			if(!tsd.isvalid){
-  				this.logs.push("往"+i+"填入数字"+(j+1)+"之后数独无解，应删除该候选");
-  				this.delcan(j,i);
-  				return true;
-  			}else if(tsd.issolved){
-  				this.logs.push("往"+i+"填入数字"+(j+1)+"即可解开数独，因此应在"+i+"填入");
-  				this.init(tsd.arr);
-
-  				this.logs=this.logs.concat(tsd.logs);
-  				return true;
-  			}
-  		}
-  	}
-  	return false;
-  }
-  
   this.dfsy = function(){
   	if(!this.isvalid) return false;
   	if(this.issolved) return false;
@@ -2399,18 +2353,18 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		tsdx.slvl=14;
   		tryl = matchlist.shift();
   		tnx = bittonum(tsdx.cells[tryl].v,9);
-  		this.logs.push("三选择尝试：尝试向"+idxtocod(tryl)+"填入"+(tnx+1));
+  		this.logs.push("Trial and Error: "+idxtocod(tryl)+", "+(tnx+1));
   		tsdx.place(tnx,tryl);
   		tsdx.solve();
   		this.dfscnt+=tsdx.dfscnt;
   		if(tsdx.issolved){
   			this.init(tsdx.arr);
-  			this.logs.push("往"+idxtocod(tryl)+"填入数字"+(tnx+1)+"即可解开数独，因此应填入"+(tnx+1));
+  			this.logs.push(idxtocod(tryl)+", "+(tnx+1)+", sudoku solved. Fill in this number.");
   			this.logs=this.logs.concat(tsdx.logs);
   			return true;
   		}else if(!tsdx.isvalid){
   			this.delcan(tnx,tryl);
-  			this.logs.push("往"+idxtocod(tryl)+"填入数字"+(tnx+1)+"之后数独无解，应删除该候选");
+  			this.logs.push(idxtocod(tryl)+", "+(tnx+1)+", sudoku failed. Delete this candidate.");
   			return true;
   		}else{
   			tsdy = this.cpy();
@@ -2424,7 +2378,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   				return true;
   			}else if(!tsdy.isvalid){
   				this.place(tnx,tryl);
-  				this.logs.push("往"+idxtocod(tryl)+"填入其他数字之后数独均无解，因此应填入"+(tnx+1));
+  				this.logs.push("Filling other numbers in "+idxtocod(tryl)+" all make this puzzle invalid, therefore "+(tnx+1)+" should be filled.");
   				return true;
   			}else{
     			for(var j=0,deln,delp,ret=false;j < 729;j++){
@@ -2432,7 +2386,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
     					delp = Math.floor(j/9);
     					deln = j%9;
     					ret = true;
-    					this.logs.push("往"+idxtocod(delp)+"填入数字"+(deln+1)+"之后数独无解，应删除该候选");
+    					this.logs.push(idxtocod(delp)+", "+(deln+1)+", sudoku failed. Delete this candidate.");
     					this.delcan(deln,delp);
     				}
     			}
@@ -2489,8 +2443,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		return this.solveST();
   		case 14:
   		return this.dfsy();
-  		case 15:
-  		return this.dfsx();
   	}
   }
   
