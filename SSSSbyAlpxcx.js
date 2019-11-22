@@ -19,7 +19,8 @@ function bitArray(length){
 			if(this.v==0) this.invalid=true;
 		}
 		return bool;
-	}
+	}
+
 	this.clr = function(){
 		this.can=0;
 		this.v=0;
@@ -2390,7 +2391,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   				return true;
   			}else if(tsd.issolved){
   				this.logs.push("往"+i+"填入数字"+(j+1)+"即可解开数独，因此应在"+i+"填入");
-  				this.init(tsd.arr);
+  				this.init(tsd.arr);
+
   				this.logs=this.logs.concat(tsd.logs);
   				return true;
   			}
