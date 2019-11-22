@@ -8,11 +8,15 @@
  SimpleStrategicSudokuSolver(Javascript): ~0.5ms
  
  Typical speed for extreme sudoku (casual test):
- (run on the same puzzle ....9..5..1.....3...23..7....45...7.8.....2.......64...9..1.....8..6......54....7)
+ (sample puzzles:
+ ....9..5..1.....3...23..7....45...7.8.....2.......64...9..1.....8..6......54....7
+ 1.......2.9.4...5...6...7...5.9.3.......7.......85..4.7.....6...3...9.8...2.....1
+ ........8..3...4...9..2..6.....79.......612...6.5.2.7...8...5...1.....2.4.5.....3
+ 1.......2.9.4...5...6...7...5.3.4.......6........58.4...2...6...3...9.8.7.......1)
  sudoku9x9(Javascript): > 30000ms
- sudokuwiki(Javascript + ASP): ~14000ms*
+ sudokuwiki(Javascript + ASP): ~14000ms* 
  HoDoKu(Java): ~11000ms
- SimpleStrategicSudokuSolver(Javascript): ~15ms
+ SimpleStrategicSudokuSolver(Javascript): ~16ms
  *Run on client and affected by network latency. The real speed may be faster.
  
  Developed by Alpxcx under GPLv3 Licence
