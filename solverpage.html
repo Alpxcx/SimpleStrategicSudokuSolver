@@ -44,7 +44,8 @@ If any individual or party have done any change to the source code of this proje
   		for(var m=0;m < spuzzle.logs.length;m++){
   			document.getElementById("resultpath").innerHTML+=spuzzle.logs[m]+"\n";
   		}
-  		document.getElementById("resultpath").innerHTML+="Puzzle successfully solved!"
+  		if(spuzzle.issolved) document.getElementById("resultpath").innerHTML+="Puzzle successfully solved!";
+  		else document.getElementById("resultpath").innerHTML+="Puzzle has no solution!";
 		}
 		function clr(){
 			document.getElementById('text').innerHTML="";
@@ -54,16 +55,18 @@ If any individual or party have done any change to the source code of this proje
 	</script>
 </head>
 <body>
+	<h1>SimpleStrategicSudokuSolver by Alpxcx</h1><br/>
+	Github page: <a href="https://github.com/Alpxcx">https://github.com/Alpxcx</a><br/>
 	This solver can solve all known standard sudoku puzzles appearing on newspapers with FULL strategic path.<br/>
 	If any standard sudoku puzzle on newspaper make this solver having to use the Trial and Error method in any case, please report to me with the puzzle.<br/>
 	It would be helpful if you have done all the pencil marks before you came to this site so you can understand the strategics :) .<br/>
-	<br/><br/>
+	<br/>
 	Please enter the puzzle you wish to solve.<br/>
 	Format: 81 digits of numbers sorted by rows. You can use number 0 or dot for any vacancies.<br/>
-	Enter here:<br/>
-	<textarea rows="2" cols="85" id="text"></textarea><br/>
-	<input value="Solve" onclick="solve();" type="button"> <input value="Clear" onclick="clr();" type="button"><br/>
-	<textarea rows="10" cols="16" id="resultpuzzle"></textarea><br/>
-	<textarea rows="30" cols="100" id="resultpath"></textarea>
+	Enter here:
+	<textarea rows="1" cols="85" id="text"></textarea><br/>
+	The final completed sudoku will show below. Click "Solve" to solve the puzzle.<input value="Solve" onclick="solve();" type="button"> <input value="Clear" onclick="clr();" type="button"><br/>
+	<textarea rows="10" cols="16" id="resultpuzzle"></textarea>Full Path:<br/>
+	<textarea rows="24" cols="100" id="resultpath"></textarea>
 </body>
 </html>

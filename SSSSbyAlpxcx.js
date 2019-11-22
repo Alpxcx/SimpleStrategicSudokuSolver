@@ -912,7 +912,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   					if(this.isrltive(temp[1],matchlist[j][1])) continue;
   					matched = true;
   					var itc = bittonum(this.cells[temp[1]].v&this.cells[matchlist[j][1]].v,9);
-  					//this.logs.push("Y-Wing between index "+p+" "+temp[1]+" "+matchlist[j][1]+" for num "+(itc+1));
   					if(temp[2] == 4){
   						this.ywlist.push([itc,p,matchlist[j][1],temp[1],1]);
   					}else if(matchlist[j][2] == 4){
@@ -942,7 +941,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
       			temp = ml.shift();
       			if(this.isrltive(temp,p)) continue;
       			var itc = bittonum(this.cells[temp].v&this.cells[p].v,9);
-      			//this.logs.push("Y-Wing between index "+matchlist[i][1]+" "+p+" "+temp+" for num "+(itc+1));
       			if(matchlist[i][2]==4){
       				this.ywlist.push([itc,matchlist[i][1],temp,p,1]);
       			}else if(this.isrltive(matchlist[i][1],temp)&4){
@@ -967,8 +965,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
     	}
     }
     this.depth=maxi;
-    if(this.issolved&&this.con) this.logs.push("数独已成功解出！");
-    if(this.con) this.logs.push("DFS总计数："+this.dfscnt);
+    if(this.issolved&&this.con) this.logs.push("Sudoku solved!");
+    if(this.con) this.logs.push("DFS count"+this.dfscnt);
     if(this.con) this.loglogs();
   }
   
@@ -983,7 +981,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		temp=this.hslist.shift();
   		if(this.cells[temp[1]].isfilled) continue;
   		this.place(temp[0],temp[1]);
-  		this.logs.push("数字"+(temp[0]+1)+"已填入"+idxtocod(temp[1])+"：所属"+temp[2]+"中该数字的唯一可填位置");
+  		this.logs.push((temp[0]+1)+" is filled into "+idxtocod(temp[1])+" : Only place to fill in the relative "+temp[2]);
   	}
   	return res;
   }
@@ -999,7 +997,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		temp=this.nslist.shift();
   		if(this.cells[temp[1]].isfilled) continue;
   		this.place(temp[0],temp[1]);
-  		this.logs.push("数字"+(temp[0]+1)+"是其所属单元格"+idxtocod(temp[1])+"的唯一候选数");
+  		this.logs.push((temp[0]+1)+" is the only candidate for cell "+idxtocod(temp[1]));
   	}
   	return res;
   }
@@ -1022,13 +1020,12 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			var rs = temp[1]*9;
   			for(var i=0,bit=1;i < 9;i++){
   				if((bit&tbit)&&!this.cells[rs].isfilled){
-  					//this.logs.push("行：尝试在索引"+rs+"中删除数字"+(temp[0]+1));
   					if(this.delcan(temp[0],rs)) tres=true;
   				}
   				rs++;
   				bit = bit << 1;
   			}
-  			if(tres) this.logs.push("第"+(temp[1]+1)+"行的数字"+(temp[0]+1)+"被其中的一个九宫格锁定了，因此不会出现在该行的其他位置");
+  			if(tres) this.logs.push((temp[0]+1)+" in row "+(temp[1]+1)+" is locked by one of the blocks in the row");
   			break;
   			case 2:
   			tres=false;
@@ -1037,13 +1034,12 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			var cs = temp[1];
   			for(var i=0,bit=1;i < 9;i++){
   				if((bit&tbit)&&!this.cells[cs].isfilled){
-  					//this.logs.push("列：尝试在索引"+cs+"中删除数字"+(temp[0]+1));
   					if(this.delcan(temp[0],cs)) tres=true;
   				}
   				cs+=9;
   				bit = bit << 1;
   			}
-  			if(tres) this.logs.push("第"+(temp[1]+1)+"列的数字"+(temp[0]+1)+"被其中的一个九宫格锁定了，因此不会出现在该列的其他位置");
+  			if(tres) this.logs.push((temp[0]+1)+" in column "+(temp[1]+1)+" is locked by one of the blocks in the column");
   			break;
   			case 4:
   			tres=false;
@@ -1053,12 +1049,11 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			}else if(this.bnst[temp[1]].mem[temp[0]].can == this.cnst[temp[3]].mem[temp[0]].can) break;
   			for(var i=0,bit=1;i < 9;i++){
   				if((bit&tbit)&&!this.cells[this.bpjtn[temp[1]][i]].isfilled){
-  					//this.logs.push("宫：尝试在索引"+this.bpjtn[temp[1]][i]+"中删除数字"+(temp[0]+1));
   					if(this.delcan(temp[0],this.bpjtn[temp[1]][i])) tres=true;
   				}
   				bit = bit << 1;
   			}
-  			if(tres) this.logs.push("第"+(temp[1]+1)+"九宫格的数字"+(temp[0]+1)+"被其中的一个行或列锁定了，因此不会出现在该九宫格的其他位置");
+  			if(tres) this.logs.push((temp[0]+1)+" in block "+(temp[1]+1)+" is locked by one of the row or column");
   			break;
   		}
   	}
@@ -1072,18 +1067,18 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		if(this.cells[temp[2]].isfilled) continue;
   		if(this.cells[temp[3]].isfilled) continue;
   		var tbit = ~((1 << temp[0])+(1 << temp[1]));
-  		this.logs.push(idxtocod(temp[2])+"与"+idxtocod(temp[3])+"之间存在隐性候选数对"+(temp[0]+1)+"与"+(temp[1]+1));
-  		for(var i=0,bit=1;i < 9;i++){
+  		for(var i=0,tres=false,bit=1;i < 9;i++){
   			if(bit&tbit){
 					if(this.cells[temp[2]].v&bit){
-						this.delcan(i,temp[2]);
+						if(this.delcan(i,temp[2])) tres=true;
 					}
 					if(this.cells[temp[3]].v&bit){
-						this.delcan(i,temp[3]);
+						if(this.delcan(i,temp[3])) tres=true;
 					}
 				}
 				bit = bit << 1;
   		}
+  		if(tres) this.logs.push("Hidden pair between "+idxtocod(temp[2])+" and "+idxtocod(temp[3])+" for "+(temp[0]+1)+" and "+(temp[1]+1));
   	}
   	return true;
   }
@@ -1105,41 +1100,37 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			var r = rs/9;
   			if(this.rnst[r].mem[temp[0]].can==2&&this.rnst[r].mem[temp[1]].can==2) break;
   		  var tbit = (1 << (temp[2]-rs))+(1 << (temp[3]-rs));
-  		  this.logs.push(idxtocod(temp[2])+"与"+idxtocod(temp[3])+"之间存在显性候选数对"+(temp[0]+1)+"与"+(temp[1]+1));
-  		  //this.logs.push(tbit);
-  			for(var i=0;i < 9;i++){
+  			for(var i=0,tres=false;i < 9;i++){
   				if((1 << i)&tbit) continue;
   				if(this.cells[rs+i].isfilled) continue;
-  				//this.logs.push("行：尝试在索引"+(rs+i)+"中删除候选数"+(temp[0]+1)+" "+(temp[1]+1));
-  				this.delcan(temp[0],rs+i);
-  				this.delcan(temp[1],rs+i);
+  				if(this.delcan(temp[0],rs+i)) tres=true;
+  				if(this.delcan(temp[1],rs+i)) tres=true;
   			}
+  			if(tres) this.logs.push("Naked pair is found between "+idxtocod(temp[2])+" and "+idxtocod(temp[3])+" for "+(temp[0]+1)+" and "+(temp[1]+1));
   			break;
   			case 2:
   			var cs = temp[2]%9;
   			if(this.cnst[cs].mem[temp[0]].can==2&&this.cnst[cs].mem[temp[1]].can==2) break;
-  		  this.logs.push(idxtocod(temp[2])+"与"+idxtocod(temp[3])+"之间存在显性候选数对"+(temp[0]+1)+"与"+(temp[1]+1));
   		  var tbit = (1 << (temp[2]-cs)/9)+(1 << (temp[3]-cs)/9);
-  			for(var i=0;i < 9;i++,cs+=9){
+  			for(var i=0,tres=false;i < 9;i++,cs+=9){
   				if((1 << i)&tbit) continue;
   				if(this.cells[cs].isfilled) continue;
-  				//this.logs.push("列：尝试在索引"+cs+"中删除候选数"+(temp[0]+1)+" "+(temp[1]+1));
-  				this.delcan(temp[0],cs);
-  				this.delcan(temp[1],cs);
+  				if(this.delcan(temp[0],cs)) tres=true;
+  				if(this.delcan(temp[1],cs)) tres=true;
   			}
+  			if(tres) this.logs.push("Naked pair is found between "+idxtocod(temp[2])+" and "+idxtocod(temp[3])+" for "+(temp[0]+1)+" and "+(temp[1]+1));
   			break;
   			case 4:
   			var b = this.bpstn[temp[2]];
   			if(this.bnst[b].mem[temp[0]].can==2&&this.bnst[b].mem[temp[1]].can==2) break;
-  		  this.logs.push(idxtocod(temp[2])+"与"+idxtocod(temp[3])+"之间存在显性候选数对"+(temp[0]+1)+"与"+(temp[1]+1));
   		  var tbit = (1 << (this.bcnpj[temp[2]]))+(1 << (this.bcnpj[temp[3]]));
-  			for(var i=0;i < 9;i++){
+  			for(var i=0,tres=false;i < 9;i++){
   				if((1 << i)&tbit) continue;
   				if(this.cells[this.bpjtn[b][i]].isfilled) continue;
-  				//this.logs.push("宫：尝试在索引"+this.bpjtn[b][i]+"中删除候选数"+(temp[0]+1)+" "+(temp[1]+1));
-  				this.delcan(temp[0],this.bpjtn[b][i]);
-  				this.delcan(temp[1],this.bpjtn[b][i]);
+  				if(this.delcan(temp[0],this.bpjtn[b][i])) tres=true;
+  				if(this.delcan(temp[1],this.bpjtn[b][i])) tres=true;
   			}
+  			if(tres) this.logs.push("Naked pair is found between "+idxtocod(temp[2])+" and "+idxtocod(temp[3])+" for "+(temp[0]+1)+" and "+(temp[1]+1));
   			break;
   		}
   	}
@@ -1163,41 +1154,41 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			var rs=temp[3]-temp[3]%9;
   			var r=rs/9;
   			if(this.rnst[r].mem[temp[0]].can < 4&&this.rnst[r].mem[temp[1]].can < 4&&this.rnst[r].mem[temp[2]].can < 4) break;
-  		  this.logs.push(idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+"之间存在显性候选数组"+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
   		  var tbit = (1 << (temp[3]-rs))+(1 << (temp[4]-rs))+(1 << (temp[5]-rs));
-  		  for(var i=0;i < 9;i++,rs++){
+  		  for(var i=0,tres=false;i < 9;i++,rs++){
   		  	if((1 << i)&tbit) continue;
   		  	if(this.cells[rs].isfilled) continue;
-  				this.delcan(temp[0],rs);
-  				this.delcan(temp[1],rs);
-  				this.delcan(temp[2],rs);
+  				if(this.delcan(temp[0],rs)) tres=true;
+  				if(this.delcan(temp[1],rs)) tres=true;
+  				if(this.delcan(temp[2],rs)) tres=true;
   		  }
+  		  if(tres) this.logs.push("Naked triple is found between "+idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+" for "+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
   		  break;
   			case 2:
   			var cs=temp[3]%9;
   			if(this.cnst[cs].mem[temp[0]].can < 4&&this.cnst[cs].mem[temp[1]].can < 4&&this.cnst[cs].mem[temp[2]].can < 4) break;
-  		  this.logs.push(idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+"之间存在显性候选数组"+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
   		  var tbit = (1 << (temp[3]-cs)/9)+(1 << (temp[4]-cs)/9)+(1 << (temp[5]-cs)/9);
-  		  for(var i=0;i < 9;i++,cs+=9){
+  		  for(var i=0,tres=false;i < 9;i++,cs+=9){
   		  	if((1 << i)&tbit) continue;
   		  	if(this.cells[cs].isfilled) continue;
-  				this.delcan(temp[0],cs);
-  				this.delcan(temp[1],cs);
-  				this.delcan(temp[2],cs);
+  				if(this.delcan(temp[0],cs)) tres=true;
+  				if(this.delcan(temp[1],cs)) tres=true;
+  				if(this.delcan(temp[2],cs)) tres=true;
   		  }
+  		  if(tres) this.logs.push("Naked triple is found between "+idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+" for "+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
   		  break;
   			case 4:
   			var b = this.bpstn[temp[3]];
   			if(this.bnst[b].mem[temp[0]].can < 4&&this.bnst[b].mem[temp[0]].can < 4&&this.bnst[b].mem[temp[0]].can < 4) break;
-  		  this.logs.push(idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+"之间存在显性候选数组"+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
   		  var tbit = (1 << (this.bcnpj[temp[3]]))+(1 << (this.bcnpj[temp[4]]))+(1 << (this.bcnpj[temp[5]]));
-  		  for(var i=0;i < 9;i++){
+  		  for(var i=0,tres=false;i < 9;i++){
   		  	if((1 << i)&tbit) continue;
   		  	if(this.cells[this.bpjtn[b][i]].isfilled) continue;
-  				this.delcan(temp[0],this.bpjtn[b][i]);
-  				this.delcan(temp[1],this.bpjtn[b][i]);
-  				this.delcan(temp[2],this.bpjtn[b][i]);
+  				if(this.delcan(temp[0],this.bpjtn[b][i])) tres=true;
+  				if(this.delcan(temp[1],this.bpjtn[b][i])) tres=true;
+  				if(this.delcan(temp[2],this.bpjtn[b][i])) tres=true;
   		  }
+  		  if(tres) this.logs.push("Naked triple is found between "+idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+" for "+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
   		  break;
   		}
   	}
@@ -1227,7 +1218,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 				}
 				bit = bit << 1;
   		}
-  		if(mch) this.logs.push(idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+"之间存在隐性候选数组"+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
+  		if(mch) this.logs.push("Hidden triple is found between "+idxtocod(temp[3])+" "+idxtocod(temp[4])+" "+idxtocod(temp[5])+" for "+(temp[0]+1)+" "+(temp[1]+1)+" "+(temp[2]+1));
   	}
   	return true;
   }
@@ -1244,7 +1235,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		if(temp[5]==1){
   			if(this.rnst[temp[1]].mem[temp[0]].isfilled) continue;
   			if(this.cnst[temp[3]].mem[temp[0]].can==2&&this.cnst[temp[4]].mem[temp[0]].can==2) continue;
-  			this.logs.push("数字"+(temp[0]+1)+"在行"+(temp[1]+1)+" "+(temp[2]+1)+"与列"+(temp[3]+1)+" "+(temp[4]+1)+"存在矩形匹配");
+  			this.logs.push("X-Wing: number "+(temp[0]+1)+", row "+(temp[1]+1)+" "+(temp[2]+1)+", column "+(temp[3]+1)+" "+(temp[4]+1));
   			var tbit=(1 << temp[1])+(1 << temp[2]);
   			for(var i=0;i < 9;i++){
   				if((1 << i)&tbit) continue;
@@ -1255,7 +1246,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		if(temp[5]==2){
   			if(this.cnst[temp[1]].mem[temp[0]].isfilled) continue;
   			if(this.rnst[temp[3]].mem[temp[0]].can==2&&this.rnst[temp[4]].mem[temp[0]].can==2) continue;
-  			this.logs.push("数字"+(temp[0]+1)+"在列"+(temp[1]+1)+" "+(temp[2]+1)+"与行"+(temp[3]+1)+" "+(temp[4]+1)+"存在矩形匹配");
+  			this.logs.push("X-Wing: number "+(temp[0]+1)+", column "+(temp[1]+1)+" "+(temp[2]+1)+", row "+(temp[3]+1)+" "+(temp[4]+1));
   			var tbit=(1 << temp[1])+(1 << temp[2]);
   			for(var i=0;i < 9;i++){
   				if((1 << i)&tbit) continue;
@@ -1275,7 +1266,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		if(temp[4]==3){
   			temp[1]%9==temp[2]%9 ? pos=temp[2]-temp[2]%9+temp[3]%9 : pos=temp[3]-temp[3]%9+temp[2]%9;
   			if(this.cells[pos].v&(1 << temp[0])){
-  				this.logs.push("Y翼删减："+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+"完成配对，故删除"+idxtocod(pos)+"处的"+(temp[0]+1));
+  				this.logs.push("Y-Wing: "+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+(temp[0]+1)+" at "+idxtocod(pos));
   				this.delcan(temp[0],pos);
   			}
   		}else{
@@ -1283,11 +1274,11 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 				bx=this.bpstn[temp[3]];
   			for(var i=0;i < 9;i++){
   				if(this.cells[this.bpjtn[b][i]].v&(1 << temp[0])&&this.isrltive(this.bpjtn[b][i],temp[3])){
-  					this.logs.push("Y翼删减："+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+"完成配对，故删除"+idxtocod(this.bpjtn[b][i])+"处的"+(temp[0]+1));
+  					this.logs.push("Y-Wing: "+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+idxtocod(this.bpjtn[b][i]));
   					this.delcan(temp[0],this.bpjtn[b][i]);
   				}
   				if(this.cells[this.bpjtn[bx][i]].v&(1 << temp[0])&&this.isrltive(this.bpjtn[bx][i],temp[2])){
-  					this.logs.push("Y翼删减："+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+"完成配对，故删除"+idxtocod(this.bpjtn[bx][i])+"处的"+(temp[0]+1));
+  					this.logs.push("Y-Wing: "+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+(temp[0]+1)+" at "+idxtocod(this.bpjtn[bx][i]));
   					this.delcan(temp[0],this.bpjtn[bx][i]);
   				}
   			}
@@ -1323,7 +1314,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   	  		if(this.delcan(temp[0],temp[6]+9*i)) tres=true;
   	  	}
   	  	if(tres) res=true;
-  			if(tres) this.logs.push("数字"+(temp[0]+1)+"在行"+(temp[1]+1)+" "+(temp[2]+1)+" "+(temp[3]+1)+"与列"+(temp[4]+1)+" "+(temp[5]+1)+" "+(temp[6]+1)+"存在矩阵匹配");
+  			if(tres) this.logs.push("Swordfish found for "+(temp[0]+1)+" in row "+(temp[1]+1)+" "+(temp[2]+1)+" "+(temp[3]+1)+" and column "+(temp[4]+1)+" "+(temp[5]+1)+" "+(temp[6]+1));
   	  }
   	  if(temp[7]==2){
   	  	tres=false;
@@ -1337,7 +1328,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   	  		if(this.delcan(temp[0],temp[6]*9+i)) tres=true;
   	  	}
   	  	if(tres) res=true;
-  			if(tres) this.logs.push("数字"+(temp[0]+1)+"在列"+(temp[1]+1)+" "+(temp[2]+1)+" "+(temp[3]+1)+"与行"+(temp[4]+1)+" "+(temp[5]+1)+" "+(temp[6]+1)+"存在矩阵匹配");
+  			if(tres) this.logs.push("Swordfish found for "+(temp[0]+1)+" in column "+(temp[1]+1)+" "+(temp[2]+1)+" "+(temp[3]+1)+" and row "+(temp[4]+1)+" "+(temp[5]+1)+" "+(temp[6]+1));
   	  }
   	}
   	return res;
@@ -1393,7 +1384,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 								if(k===jz||k===jx||k===jy) continue;
 								if(this.delcan(i,cs)){
 									res=true;
-									this.logs.push("鱼鳍删减：删除"+cs+"处的"+(i+1)+"，残缺矩阵行"+(jx+1)+" "+(jy+1)+" "+(jz+1)+"，列"+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+" "+(ffp4+1));
+									this.logs.push("Finned swordfish: delete "+(i+1)+" in cell "+idxtocod(cs)+", row "+(jx+1)+" "+(jy+1)+" "+(jz+1)+", column "+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+", fin column "+(ffp4+1));
 								}
 							}
 							tbitx = (tbit&tbity) >> (c+1);
@@ -1404,7 +1395,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   								if(k===jz||k===jx||k===jy) continue;
   								if(this.delcan(i,c)){
   									res=true;
-  									this.logs.push("鱼鳍删减：删除"+c+"处的"+(i+1)+"，残缺矩阵行"+(jx+1)+" "+(jy+1)+" "+(jz+1)+"，列"+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+" "+(ffp4+1));
+  									this.logs.push("Finned swordfish: delete "+(i+1)+" in cell "+idxtocod(c)+", row "+(jx+1)+" "+(jy+1)+" "+(jz+1)+", column "+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+", fin column "+(ffp4+1));
   								}
   							}
 							}
@@ -1459,7 +1450,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 								if(k===jz||k===jx||k===jy) continue;
 								if(this.delcan(i,r)){
 									res=true;
-									this.logs.push("鱼鳍删减：删除"+r+"处的"+(i+1)+"，残缺矩阵列"+(jx+1)+" "+(jy+1)+" "+(jz+1)+"，行"+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+" "+(ffp4+1));
+									this.logs.push("Finned swordfish: delete "+(i+1)+" in cell "+idxtocod(r)+", column "+(jx+1)+" "+(jy+1)+" "+(jz+1)+", row "+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+", fin row "+(ffp4+1));
 								}
 							}
 							tbitx = (tbit&tbity) >> (tr+1);
@@ -1470,7 +1461,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   								if(k===jz||k===jx||k===jy) continue;
   								if(this.delcan(i,r)){
   									res=true;
-  									this.logs.push("鱼鳍删减：删除"+r+"处的"+(i+1)+"，残缺矩阵列"+(jx+1)+" "+(jy+1)+" "+(jz+1)+"，行"+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+" "+(ffp4+1));
+  									this.logs.push("Finned swordfish: delete "+(i+1)+" in cell "+idxtocod(r)+", column "+(jx+1)+" "+(jy+1)+" "+(jz+1)+", row "+(ffp1+1)+" "+(ffp2+1)+" "+(ffp3+1)+", fin row "+(ffp4+1));
   								}
   							}
 							}
@@ -1484,11 +1475,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   }
   
   this.solveSC = function(){
-  	//一个成功率极高的尝试算法
-  	//该算法的成功是因为采用“前判”填入相对更容易直接得出结果的选项
-  	//而不是在深入后才开始剪枝
-  	//实际上这个算法根本不会深入尝试
-  	//因此它其实不是DFS，反而更接近BFS
   	if(!this.isvalid) return false;
   	if(this.issolved) return false;
   	var tsdx,tsdy;
@@ -1558,9 +1544,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   }
   
   this.solveST = function(){
-  	//这个就是纯正的DFS了
-  	//不过这个函数只会寻找带两个候选的方格
-  	//假如整个数独都找不到这样的方格，那么GG
+  	//Trial and Error
   	if(!this.isvalid) return false;
   	if(this.issolved) return false;
   	var tsdx,tsdy;
@@ -1576,7 +1560,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		tny = bittonum(tsdx.cells[tryl].v&~(1 << tnx),9);
   		if(this.tcache[tryl*9+tny]&&this.tcache[tryl*9+tnx]) continue;
   		this.tcache[tryl*9+tnx]=true;
-  		//if(this.tcache[tryl*9+tnx]) continue;
   		this.logs.push("双选择尝试：尝试向"+idxtocod(tryl)+"填入"+(tnx+1));
   		tsdx.place(tnx,tryl);
   		tsdx.solve();
@@ -1626,6 +1609,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   }
   
   this.solveJE = function(){
+  	//There are too many repeated codes here
+  	//If anyone can improve this I would be thankful.
   	if(!this.isvalid) return false;
   	if(this.issolved) return false;
   	var px,py,pu,pv,itc,ebit,tbit,tres,tresx,ib=0,tret=false;
