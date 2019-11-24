@@ -1241,7 +1241,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		if(temp[4]==3){
   			temp[1]%9==temp[2]%9 ? pos=temp[2]-temp[2]%9+temp[3]%9 : pos=temp[3]-temp[3]%9+temp[2]%9;
   			if(this.cells[pos].v&(1 << temp[0])){
-  				this.logs.push("Y-Wing: "+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+(temp[0]+1)+" at "+idxtocod(pos));
+  				this.logs.push("Y-Wing: center cell "+idxtocod(temp[1])+", wing cells "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+(temp[0]+1)+" at "+idxtocod(pos));
   				this.delcan(temp[0],pos);
   			}
   		}else{
@@ -1249,11 +1249,11 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 				bx=this.bpstn[temp[3]];
   			for(var i=0;i < 9;i++){
   				if(this.cells[this.bpjtn[b][i]].v&(1 << temp[0])&&this.isrltive(this.bpjtn[b][i],temp[3])){
-  					this.logs.push("Y-Wing: "+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+idxtocod(this.bpjtn[b][i]));
+  					this.logs.push("Y-Wing: center cell "+idxtocod(temp[1])+", wing cells "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+(temp[0]+1)+" at "+idxtocod(this.bpjtn[b][i]));
   					this.delcan(temp[0],this.bpjtn[b][i]);
   				}
   				if(this.cells[this.bpjtn[bx][i]].v&(1 << temp[0])&&this.isrltive(this.bpjtn[bx][i],temp[2])){
-  					this.logs.push("Y-Wing: "+idxtocod(temp[1])+" "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+(temp[0]+1)+" at "+idxtocod(this.bpjtn[bx][i]));
+  					this.logs.push("Y-Wing: center cell "+idxtocod(temp[1])+", wing cells "+idxtocod(temp[2])+" "+idxtocod(temp[3])+", therefore delete "+(temp[0]+1)+" at "+idxtocod(this.bpjtn[bx][i]));
   					this.delcan(temp[0],this.bpjtn[bx][i]);
   				}
   			}
