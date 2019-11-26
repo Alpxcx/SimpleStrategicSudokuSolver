@@ -13,11 +13,10 @@
  1.......2.9.4...5...6...7...5.9.3.......7.......85..4.7.....6...3...9.8...2.....1
  ........8..3...4...9..2..6.....79.......612...6.5.2.7...8...5...1.....2.4.5.....3
  1.......2.9.4...5...6...7...5.3.4.......6........58.4...2...6...3...9.8.7.......1)
- sudoku9x9(Javascript): > 30000ms
- sudokuwiki(Javascript + ASP): ~14000ms* 
- HoDoKu(Java): ~11000ms
+ sudoku9x9.com(Javascript): > 30000ms
+ HoDoKu(Java): ~8000ms
  SimpleStrategicSudokuSolver(Javascript): ~16ms
- *Run on client and affected by network latency. The real speed may be faster.
+ *Sudoku Explainer is not on this list because it's too old.
  
  Developed by Alpxcx under GPLv3 Licence
  Version: 1.0.0beta, 22-Nov-2019

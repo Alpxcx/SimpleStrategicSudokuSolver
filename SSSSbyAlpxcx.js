@@ -978,6 +978,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   }
   
   this.solveCM = function(){
+  	//Claiming and pointing
   	var temp,tbit,tres;
   	if(this.claims.length > 0){
   		var res=true;
@@ -1450,6 +1451,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   }
   
   this.solveSC = function(){
+  	//if there are too many bi-position choices for a number then it is very likely to be solvable by clouring method
+  	//showing the clouring logic is too complicated to code therefore I used trial-and-error type mechanism
   	if(!this.isvalid) return false;
   	if(this.issolved) return false;
   	var tsdx,tsdy;
@@ -1520,6 +1523,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   
   this.solveST = function(){
   	//Trial and Error
+  	//this solving method goes very deep therefore it's not a human-like strategy
+  	//however it can be human-like if tsd.slvl is 13, but it will take longer to solve
   	if(!this.isvalid) return false;
   	if(this.issolved) return false;
   	var tsdx,tsdy;
