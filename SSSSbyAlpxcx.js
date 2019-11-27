@@ -2418,6 +2418,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		return this.solveXW();
   		case 8:
   		//Swordfish
+  		//unfortunately a bug is found here so I have to disable it
+  		return false;
   		return this.solveSF();
   		case 9:
   		//Y-Wing
@@ -2430,6 +2432,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		return this.solveFF();
   		case 12:
   		//Junior Exocet
+  		//unfortunately a bug is found here so I have to disable it
+  		return false;
   		return this.solveJE();
   		case 13:
   		//weak DFS

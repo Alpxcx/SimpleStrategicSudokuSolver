@@ -27,12 +27,12 @@ If any individual or party have done any change to the source code of this proje
   						sdArr.push(ti);
   					}
   				}
-  				break;
+  				var spuzzle = new sd9(false);
+  				spuzzle.init(sdArr);
+  				spuzzle.solve();
   			}
   		}
-  		var spuzzle = new sd9(false);
-  		spuzzle.init(sdArr);
-  		spuzzle.solve();
+  		console.log("Dev message: total runtime: "+((new Date().getTime()-btime)/1000)+" seconds");
   		document.getElementById("resultpuzzle").innerHTML="";
   		document.getElementById("resultpath").innerHTML="";
   		for(var k=0;k < 9;k++){
@@ -46,7 +46,7 @@ If any individual or party have done any change to the source code of this proje
   		}
   		if(spuzzle.issolved) document.getElementById("resultpath").innerHTML+="Puzzle successfully solved!";
   		else document.getElementById("resultpath").innerHTML+="Puzzle has no solution!";
-  		console.log("Dev message: total trial count : "+spuzzle.dfscnt);
+  		console.log("Dev message: total trial count for the last puzzle: "+spuzzle.dfscnt);
 		}
 		function clr(){
 			document.getElementById("text").innerHTML="";
