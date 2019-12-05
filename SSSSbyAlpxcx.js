@@ -1,13 +1,10 @@
-function bitArray(length){
+function bitArray(length,initvalue){
 	this.ol = length;
 	this.can = length;
 	this.v = 0;
 	this.isfilled=false;
 	this.invalid=false;
-	for(var i=0,bit=1;length > 0;length--){
-	  this.v += bit;
-	  bit = bit << 1;
-  }
+	this.v=initvalue;
 	this.del = function(inputnum){
 		if(inputnum==-1) return false;
 		var bit = 1;
@@ -32,18 +29,17 @@ function bitArray(length){
 		this.isfilled=true;
 	}
 	this.cpy = function(){
-		var res =  new bitArray(this.ol);
+		var res =  new bitArray(this.ol,this.v);
 		res.can = this.can;
-		res.v = this.v;
 		res.isfilled = this.isfilled;
 		res.invalid = this.invalid;
 		return res;
 	}
 }
 
-function bitGroup(length){
+function bitGroup(length,initvalue,init){
 	this.unfc = length;
-	this.v=0;
+	this.v=initvalue;
 	this.dot=0;
 	this.mem = new Array(length);
 	this.isfilled=false;
@@ -52,11 +48,11 @@ function bitGroup(length){
 	this.hp1=0;
 	this.hp2=0;
 	this.numx=0;
-	for(var i=0,bit=1;i < length;i++){
-	  this.mem[i] = new bitArray(length);
-	  this.v += bit;
-	  bit = bit << 1;
-  }
+	if(init===undefined){
+		for(var i=0,bit=1;i < length;i++){
+			this.mem[i] = new bitArray(length,initvalue);
+		}
+	}
   this.fill = function(num,pos){
   	for(var i=0;i < this.mem.length;i++){
   		if(i==num) continue;
@@ -102,9 +98,8 @@ function bitGroup(length){
   }
   this.cpy = function(){
   	var ol = this.mem.length;
-  	var res = new bitGroup(ol);
+  	var res = new bitGroup(ol,this.v,0);
   	res.unfc = this.unfc;
-  	res.v = this.v;
   	for(var i=0;i < ol;i++){
   		res.mem[i] = this.mem[i].cpy();
   	}
@@ -126,15 +121,19 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   this.cnst = new Array(9);
   this.bnst = new Array(9);
 	if(ogn){
+  	for(var i=0,bit=1,tbit=0;i < 9;i++){
+  	  tbit += bit;
+  	  bit = bit << 1;
+    }
 		this.arr.fill(0);
 		//Recording candidates for each cell
-		autofill(this.cells,bitArray,9);
+		autofill(this.cells,bitArray,9,tbit);
 		this.ncache.fill(true);
 		this.tcache.fill(false);
 		this.d_or_t.fill(0);
-    autofill(this.rnst,bitGroup,9);
-    autofill(this.cnst,bitGroup,9);
-    autofill(this.bnst,bitGroup,9);
+    autofill(this.rnst,bitGroup,9,tbit);
+    autofill(this.cnst,bitGroup,9,tbit);
+    autofill(this.bnst,bitGroup,9,tbit);
 	}
 	this.nslist = new Array;
 	this.hslist = new Array;
@@ -2482,9 +2481,9 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 	
 }
 
-function autofill(arr,obj,arg){
+function autofill(arr,obj,arg1,arg2){
 	for(var i=0;i < arr.length;i++){
-		arr[i] = new obj(arg);
+		arr[i] = new obj(arg1,arg2);
 	}
 }
 
