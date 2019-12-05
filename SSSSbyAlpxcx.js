@@ -273,8 +273,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 			//Find locked candidates
 			this.BLRD(r,c,b,num);
 			this.findXW(r,c,num);
-			this.findSSF(r,c,num);
-			this.findSF(r,c,num);
+			//this.findSSF(r,c,num);
+			//this.findSF(r,c,num);
 			this.findSNT(r,c,b);
 			this.findNT(r,c,b);
 			this.findHT(r,c,b,num);
