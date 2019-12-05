@@ -1617,7 +1617,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   								if(bs+jx < tp){
   									var tmp=px;px=py;py=tmp;
   								}
-  								py > px? itc=(py-px)%9 : itc=(px-py+9)%9;
+  								itc=py%9-px%9;
   								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
   								for(var k=0,tstr="";k < 9;k++){
   									if((1 << k)&tres){
@@ -1740,7 +1740,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   								if(bs+jx < tp){
   									var tmp=px;px=py;py=tmp;
   								}
-  								py > px? itc=(py-px)%9 : itc=(px-py+9)%9;
+  								itc=py%9-px%9;
   								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
   								for(var k=0,tstr="";k < 9;k++){
   									if((1 << k)&tres){
@@ -1863,7 +1863,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   								if(bs+jx < tp){
   									var tmp=px;px=py;py=tmp;
   								}
-  								py > px? itc=(py-px)%9 : itc=(px-py+9)%9;
+  								itc=py%9-px%9;
   								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
   								for(var k=0,tstr="";k < 9;k++){
   									if((1 << k)&tres){
@@ -2429,8 +2429,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		return this.solveFF();
   		case 12:
   		//Junior Exocet
-  		//unfortunately a bug is found here so I have to disable it
-  		return false;
   		return this.solveJE();
   		case 13:
   		//weak DFS
