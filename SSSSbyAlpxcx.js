@@ -1587,750 +1587,750 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   	return false;
   }
   
-  this.solveJE = function(){
-  	//There are too many repeated codes here
-  	//If anyone can improve this I would be thankful.
-  	if(!this.isvalid) return false;
-  	if(this.issolved) return false;
-  	var px,py,pu,pv,itc,ebit,tbit,tres,tresx,ib=0,tret=false;
-  	for(var i=0,tnc;i < 9;i++){
-  		tnc=0;
-  		for(var j=0;j < 9;j++){
-  			if(this.rnst[j].mem[i].isfilled) tnc++;
-  		}
-  		if(tnc > 4) ib+=(1 << i);
-  	}
-  	for(var i=0,jx;i < 9;i++){
-  		j=0;
-  		tres=verijexc(this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],ib);
-  		if(tres!=0){
-  			var tn = i%3;
-  			var bs = i-tn;
-  			for(var jx=0;jx < 3;jx++){
-  				if(jx===tn) continue;
-  				for(var jy=3;jy < 6;jy++){
-  					if((this.cells[this.bpjtn[bs+jx][jy]].v&tres)===tres){
-  						px=this.bpjtn[bs+jx][jy];
-  						for(var jz=6,tp=bittonum(~((1 << tn)+(1 << jx)),3)+bs;jz < 9;jz++){
-  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
-  								py=this.bpjtn[tp][jz];
-  								if(bs+jx < tp){
-  									var tmp=px;px=py;py=tmp;
-  								}
-  								itc=py%9-px%9;
-  								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
-  								for(var k=0,tstr="";k < 9;k++){
-  									if((1 << k)&tres){
-  										tstr+=(k+1)+" ";
-  										continue;
-  									}
-  									if(this.delcan(k,px)) tret=true;
-  									if(this.delcan(k,py)) tret=true;
-  								}
-  							}
-  						}
-  						if(tret){
-  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
-  							for(var jx=0;jx < 3;jx++){
-  								if(jx===tn) continue;
-  								tp=bs+jx;
-  								tresx=verijexc(this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][5]]);
-  								if(tresx===tres){
-  									for(var jy=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 3;jy++){
-  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
-  											pu=this.bpjtn[tpx][jy];
-  											for(var jz=6;jz < 9;jz++){
-  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
-  													pv=this.bpjtn[i][jz];
-  													if((this.cells[pu+18].v&tres)||(this.cells[pv-18].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky+9*kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  								tresx=verijexc(this.cells[this.bpjtn[tp][6]],this.cells[this.bpjtn[tp][7]],this.cells[this.bpjtn[tp][8]]);
-  								if(tresx===tres){
-  									for(var jy=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 3;jy++){
-  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
-  											pu=this.bpjtn[tpx][jy];
-  											for(var jz=3;jz < 6;jz++){
-  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
-  													pv=this.bpjtn[i][jz];
-  													if((this.cells[pu+9].v&tres)||(this.cells[pv-9].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky+9*kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  							}
-  							return true;
-  						}
-  					}
-  				}
-  			}
-  		}
-  		tres=verijexc(this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],ib);
-  		if(tres!=0){
-  			var tn = i%3;
-  			var bs = i-tn;
-  			for(var jx=0;jx < 3;jx++){
-  				if(jx===tn) continue;
-  				for(var jy=0;jy < 3;jy++){
-  					if((this.cells[this.bpjtn[bs+jx][jy]].v&tres)===tres){
-  						px=this.bpjtn[bs+jx][jy];
-  						for(var jz=6,tp=bittonum(~((1 << tn)+(1 << jx)),3)+bs;jz < 9;jz++){
-  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
-  								py=this.bpjtn[tp][jz];
-  								if(bs+jx < tp){
-  									var tmp=px;px=py;py=tmp;
-  								}
-  								itc=py%9-px%9;
-  								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
-  								for(var k=0,tstr="";k < 9;k++){
-  									if((1 << k)&tres){
-  										tstr+=(k+1)+" ";
-  										continue;
-  									}
-  									if(this.delcan(k,px)) tret=true;
-  									if(this.delcan(k,py)) tret=true;
-  								}
-  							}
-  						}
-  						if(tret){
-  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
-  							for(var jx=0;jx < 3;jx++){
-  								if(jx===tn) continue;
-  								tp=bs+jx;
-  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][2]]);
-  								if(tresx===tres){
-  									for(var jy=3,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 6;jy++){
-  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
-  											pu=this.bpjtn[tpx][jy];
-  											for(var jz=6;jz < 9;jz++){
-  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
-  													pv=this.bpjtn[i][jz];
-  													if((this.cells[pu+9].v&tres)||(this.cells[pv-9].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky+9*kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  								tresx=verijexc(this.cells[this.bpjtn[tp][6]],this.cells[this.bpjtn[tp][7]],this.cells[this.bpjtn[tp][8]]);
-  								if(tresx===tres){
-  									for(var jy=3,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 6;jy++){
-  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
-  											pu=this.bpjtn[tpx][jy];
-  											for(var jz=0;jz < 3;jz++){
-  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
-  													pv=this.bpjtn[i][jz];
-  													if((this.cells[pu-9].v&tres)||(this.cells[pv+9].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky+9*kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  							}
-  							return true;
-  						}
-  					}
-  				}
-  			}
-  		}
-  		tres=verijexc(this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],ib);
-  		if(tres!=0){
-  			var tn = i%3;
-  			var bs = i-tn;
-  			for(var jx=0;jx < 3;jx++){
-  				if(jx===tn) continue;
-  				for(var jy=0;jy < 3;jy++){
-  					if((this.cells[this.bpjtn[bs+jx][jy]].v&tres)===tres){
-  						px=this.bpjtn[bs+jx][jy];
-  						for(var jz=3,tp=bittonum(~((1 << tn)+(1 << jx)),3)+bs;jz < 6;jz++){
-  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
-  								py=this.bpjtn[tp][jz];
-  								if(bs+jx < tp){
-  									var tmp=px;px=py;py=tmp;
-  								}
-  								itc=py%9-px%9;
-  								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
-  								for(var k=0,tstr="";k < 9;k++){
-  									if((1 << k)&tres){
-  										tstr+=(k+1)+" ";
-  										continue;
-  									}
-  									if(this.delcan(k,px)) tret=true;
-  									if(this.delcan(k,py)) tret=true;
-  								}
-  							}
-  						}
-  						if(tret){
-  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
-  							for(var jx=0;jx < 3;jx++){
-  								if(jx===tn) continue;
-  								tp=bs+jx;
-  								tresx=verijexc(this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][5]]);
-  								if(tresx===tres){
-  									for(var jy=6,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 9;jy++){
-  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
-  											pu=this.bpjtn[tpx][jy];
-  											for(var jz=0;jz < 3;jz++){
-  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
-  													pv=this.bpjtn[i][jz];
-  													if((this.cells[pu-18].v&tres)||(this.cells[pv+18].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
-            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky+9*kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][2]]);
-  								if(tresx===tres){
-  									for(var jy=6,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 9;jy++){
-  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
-  											pu=this.bpjtn[tpx][jy];
-  											for(var jz=3;jz < 6;jz++){
-  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
-  													pv=this.bpjtn[i][jz];
-  													if((this.cells[pu-9].v&tres)||(this.cells[pv+9].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
-            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky+9*kx)){
-  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  							}
-  							return true;
-  						}
-  					}
-  				}
-  			}
-  		}
-  		tres=verijexc(this.cells[this.bpjtn[i][0]],this.cells[this.bpjtn[i][3]],this.cells[this.bpjtn[i][6]],ib);
-  		if(tres!=0){
-  			var tn = Math.floor(i/3);
-  			var bs = i%3;
-  			for(var jx=0;jx < 3;jx++){
-  				if(jx===tn) continue;
-  				for(var jy=1;jy < 8;jy+=3){
-  					if((this.cells[this.bpjtn[jx*3+bs][jy]].v&tres)===tres){
-  						px=this.bpjtn[jx*3+bs][jy];
-  						for(var jz=2,tp=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
-  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
-  								py=this.bpjtn[tp][jz];
-  								if((this.cells[px+1].v&tres)||(this.cells[py-1].v&tres)) break;
-  								for(var k=0,tstr="";k < 9;k++){
-  									if((1 << k)&tres){
-  										tstr+=(k+1)+" ";
-  										continue;
-  									}
-  									if(this.delcan(k,px)) tret=true;
-  									if(this.delcan(k,py)) tret=true;
-  								}
-  							}
-  						}
-  						if(tret){
-  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
-  							for(var jx=0;jx < 3;jx++){
-  								if(jx===tn) continue;
-  								tp=jx*3+bs;
-  								tresx=verijexc(this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][7]]);
-  								if(tresx===tres){
-  									for(var jy=2;jy < 9;jy+=3){
-  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
-  											pu=this.bpjtn[i][jy];
-  											for(var jz=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 7;jz+=3){
-  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
-  													pv=this.bpjtn[tpx][jz];
-  													if((this.cells[pu-2].v&tres)||(this.cells[pv+2].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  								tresx=verijexc(this.cells[this.bpjtn[tp][2]],this.cells[this.bpjtn[tp][5]],this.cells[this.bpjtn[tp][8]]);
-  								if(tresx===tres){
-  									for(var jy=1;jy < 8;jy+=3){
-  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
-  											pu=this.bpjtn[i][jy];
-  											for(var jz=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 7;jz+=3){
-  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
-  													pv=this.bpjtn[tpx][jz];
-  													if((this.cells[pu-1].v&tres)||(this.cells[pv+1].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  							}
-  							return true;
-  						}
-  					}
-  				}
-  			}
-  		}
-  		tres=verijexc(this.cells[this.bpjtn[i][1]],this.cells[this.bpjtn[i][4]],this.cells[this.bpjtn[i][7]],ib);
-  		if(tres!=0){
-  			var tn = Math.floor(i/3);
-  			var bs = i%3;
-  			for(var jx=0;jx < 3;jx++){
-  				if(jx===tn) continue;
-  				for(var jy=0;jy < 7;jy+=3){
-  					if((this.cells[this.bpjtn[jx*3+bs][jy]].v&tres)===tres){
-  						px=this.bpjtn[jx*3+bs][jy];
-  						for(var jz=2,tp=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
-  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
-  								py=this.bpjtn[tp][jz];
-  								if((this.cells[px+2].v&tres)||(this.cells[py-2].v&tres)) break;
-  								for(var k=0,tstr="";k < 9;k++){
-  									if((1 << k)&tres){
-  										tstr+=(k+1)+" ";
-  										continue;
-  									}
-  									if(this.delcan(k,px)) tret=true;
-  									if(this.delcan(k,py)) tret=true;
-  								}
-  							}
-  						}
-  						if(tret){
-  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
-  							for(var jx=0;jx < 3;jx++){
-  								if(jx===tn) continue;
-  								tp=jx*3+bs;
-  								tresx=verijexc(this.cells[this.bpjtn[tp][2]],this.cells[this.bpjtn[tp][5]],this.cells[this.bpjtn[tp][8]]);
-  								if(tresx===tres){
-  									for(var jy=0;jy < 7;jy+=3){
-  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
-  											pu=this.bpjtn[i][jy];
-  											for(var jz=1,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 8;jz+=3){
-  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
-  													pv=this.bpjtn[tpx][jz];
-  													if((this.cells[pu+1].v&tres)||(this.cells[pv-1].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][6]]);
-  								if(tresx===tres){
-  									for(var jy=2;jy < 9;jy+=3){
-  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
-  											pu=this.bpjtn[i][jy];
-  											for(var jz=1,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 8;jz+=3){
-  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
-  													pv=this.bpjtn[tpx][jz];
-  													if((this.cells[pu-1].v&tres)||(this.cells[pv+1].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  							}
-  							return true;
-  						}
-  					}
-  				}
-  			}
-  		}
-  		tres=verijexc(this.cells[this.bpjtn[i][2]],this.cells[this.bpjtn[i][5]],this.cells[this.bpjtn[i][8]],ib);
-  		if(tres!=0){
-  			var tn = Math.floor(i/3);
-  			var bs = i%3;
-  			for(var jx=0;jx < 3;jx++){
-  				if(jx===tn) continue;
-  				for(var jy=0;jy < 7;jy+=3){
-  					if((this.cells[this.bpjtn[jx*3+bs][jy]].v&tres)===tres){
-  						px=this.bpjtn[jx*3+bs][jy];
-  						for(var jz=1,tp=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 8;jz+=3){
-  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
-  								py=this.bpjtn[tp][jz];
-  								if((this.cells[px+1].v&tres)||(this.cells[py-1].v&tres)) break;
-  								for(var k=0,tstr="";k < 9;k++){
-  									if((1 << k)&tres){
-  										tstr+=(k+1)+" ";
-  										continue;
-  									}
-  									if(this.delcan(k,px)) tret=true;
-  									if(this.delcan(k,py)) tret=true;
-  								}
-  							}
-  						}
-  						if(tret){
-  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
-  							for(var jx=0;jx < 3;jx++){
-  								if(jx===tn) continue;
-  								tp=jx*3+bs;
-  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][6]]);
-  								if(tresx===tres){
-  									for(var jy=1;jy < 8;jy+=3){
-  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
-  											pu=this.bpjtn[i][jy];
-  											for(var jz=2,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
-  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
-  													pv=this.bpjtn[tpx][jz];
-  													if((this.cells[pu+1].v&tres)||(this.cells[pv-1].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  								tresx=verijexc(this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][7]]);
-  								if(tresx===tres){
-  									for(var jy=0;jy < 7;jy+=3){
-  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
-  											pu=this.bpjtn[i][jy];
-  											for(var jz=2,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
-  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
-  													pv=this.bpjtn[tpx][jz];
-  													if((this.cells[pu+2].v&tres)||(this.cells[pv-2].v&tres)) return true;
-  													for(var k=0;k < 9;k++){
-            									if((1 << k)&tres) continue;
-            									this.delcan(k,pu);
-            									this.delcan(k,pv);
-            								}
-            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
-  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
-  													for(var kx=0;kx < 9;kx++){
-  														if(kx===3*(i%3)){
-  															kx+=3;continue;
-  														}
-  														for(var ky=0,ebit=0;ky < 9;ky++){
-  															if((1 << ky)&tbit){
-  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
-  															}
-  														}
-  														for(var ky=0;ky < 9;ky++){
-  															if((1 << ky)&tbit) continue;
-  															for(var kz=0;kz < 9;kz++){
-  																if((1 << kz)&ebit){
-  																	if(this.delcan(kz,ky*9+kx)){
-  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
-  																	}
-  																}
-  															}
-  														}
-  													}
-  													return true;
-  												}
-  											}
-  										}
-  									}
-  								}
-  							}
-  							return true;
-  						}
-  					}
-  				}
-  			}
-  		}
-  	}
-  	return false;
-  }
+//  this.solveJE = function(){
+//  	//There are too many repeated codes here
+//  	//If anyone can improve this I would be thankful.
+//  	if(!this.isvalid) return false;
+//  	if(this.issolved) return false;
+//  	var px,py,pu,pv,itc,ebit,tbit,tres,tresx,ib=0,tret=false;
+//  	for(var i=0,tnc;i < 9;i++){
+//  		tnc=0;
+//  		for(var j=0;j < 9;j++){
+//  			if(this.rnst[j].mem[i].isfilled) tnc++;
+//  		}
+//  		if(tnc > 4) ib+=(1 << i);
+//  	}
+//  	for(var i=0,jx;i < 9;i++){
+//  		j=0;
+//  		tres=verijexc(this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],ib);
+//  		if(tres!=0){
+//  			var tn = i%3;
+//  			var bs = i-tn;
+//  			for(var jx=0;jx < 3;jx++){
+//  				if(jx===tn) continue;
+//  				for(var jy=3;jy < 6;jy++){
+//  					if((this.cells[this.bpjtn[bs+jx][jy]].v&tres)===tres){
+//  						px=this.bpjtn[bs+jx][jy];
+//  						for(var jz=6,tp=bittonum(~((1 << tn)+(1 << jx)),3)+bs;jz < 9;jz++){
+//  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
+//  								py=this.bpjtn[tp][jz];
+//  								if(bs+jx < tp){
+//  									var tmp=px;px=py;py=tmp;
+//  								}
+//  								itc=py%9-px%9;
+//  								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
+//  								for(var k=0,tstr="";k < 9;k++){
+//  									if((1 << k)&tres){
+//  										tstr+=(k+1)+" ";
+//  										continue;
+//  									}
+//  									if(this.delcan(k,px)) tret=true;
+//  									if(this.delcan(k,py)) tret=true;
+//  								}
+//  							}
+//  						}
+//  						if(tret){
+//  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
+//  							for(var jx=0;jx < 3;jx++){
+//  								if(jx===tn) continue;
+//  								tp=bs+jx;
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][5]]);
+//  								if(tresx===tres){
+//  									for(var jy=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 3;jy++){
+//  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[tpx][jy];
+//  											for(var jz=6;jz < 9;jz++){
+//  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[i][jz];
+//  													if((this.cells[pu+18].v&tres)||(this.cells[pv-18].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky+9*kx)){
+//  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][6]],this.cells[this.bpjtn[tp][7]],this.cells[this.bpjtn[tp][8]]);
+//  								if(tresx===tres){
+//  									for(var jy=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 3;jy++){
+//  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[tpx][jy];
+//  											for(var jz=3;jz < 6;jz++){
+//  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[i][jz];
+//  													if((this.cells[pu+9].v&tres)||(this.cells[pv-9].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky+9*kx)){
+//  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  							}
+//  							return true;
+//  						}
+//  					}
+//  				}
+//  			}
+//  		}
+//  		tres=verijexc(this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],ib);
+//  		if(tres!=0){
+//  			var tn = i%3;
+//  			var bs = i-tn;
+//  			for(var jx=0;jx < 3;jx++){
+//  				if(jx===tn) continue;
+//  				for(var jy=0;jy < 3;jy++){
+//  					if((this.cells[this.bpjtn[bs+jx][jy]].v&tres)===tres){
+//  						px=this.bpjtn[bs+jx][jy];
+//  						for(var jz=6,tp=bittonum(~((1 << tn)+(1 << jx)),3)+bs;jz < 9;jz++){
+//  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
+//  								py=this.bpjtn[tp][jz];
+//  								if(bs+jx < tp){
+//  									var tmp=px;px=py;py=tmp;
+//  								}
+//  								itc=py%9-px%9;
+//  								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
+//  								for(var k=0,tstr="";k < 9;k++){
+//  									if((1 << k)&tres){
+//  										tstr+=(k+1)+" ";
+//  										continue;
+//  									}
+//  									if(this.delcan(k,px)) tret=true;
+//  									if(this.delcan(k,py)) tret=true;
+//  								}
+//  							}
+//  						}
+//  						if(tret){
+//  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
+//  							for(var jx=0;jx < 3;jx++){
+//  								if(jx===tn) continue;
+//  								tp=bs+jx;
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][2]]);
+//  								if(tresx===tres){
+//  									for(var jy=3,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 6;jy++){
+//  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[tpx][jy];
+//  											for(var jz=6;jz < 9;jz++){
+//  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[i][jz];
+//  													if((this.cells[pu+9].v&tres)||(this.cells[pv-9].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky+9*kx)){
+//  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][6]],this.cells[this.bpjtn[tp][7]],this.cells[this.bpjtn[tp][8]]);
+//  								if(tresx===tres){
+//  									for(var jy=3,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 6;jy++){
+//  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[tpx][jy];
+//  											for(var jz=0;jz < 3;jz++){
+//  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[i][jz];
+//  													if((this.cells[pu-9].v&tres)||(this.cells[pv+9].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky+9*kx)){
+//  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  							}
+//  							return true;
+//  						}
+//  					}
+//  				}
+//  			}
+//  		}
+//  		tres=verijexc(this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],this.cells[this.bpjtn[i][j++]],ib);
+//  		if(tres!=0){
+//  			var tn = i%3;
+//  			var bs = i-tn;
+//  			for(var jx=0;jx < 3;jx++){
+//  				if(jx===tn) continue;
+//  				for(var jy=0;jy < 3;jy++){
+//  					if((this.cells[this.bpjtn[bs+jx][jy]].v&tres)===tres){
+//  						px=this.bpjtn[bs+jx][jy];
+//  						for(var jz=3,tp=bittonum(~((1 << tn)+(1 << jx)),3)+bs;jz < 6;jz++){
+//  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
+//  								py=this.bpjtn[tp][jz];
+//  								if(bs+jx < tp){
+//  									var tmp=px;px=py;py=tmp;
+//  								}
+//  								itc=py%9-px%9;
+//  								if((this.cells[px+itc].v&tres)||(this.cells[py-itc].v&tres)) break;
+//  								for(var k=0,tstr="";k < 9;k++){
+//  									if((1 << k)&tres){
+//  										tstr+=(k+1)+" ";
+//  										continue;
+//  									}
+//  									if(this.delcan(k,px)) tret=true;
+//  									if(this.delcan(k,py)) tret=true;
+//  								}
+//  							}
+//  						}
+//  						if(tret){
+//  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
+//  							for(var jx=0;jx < 3;jx++){
+//  								if(jx===tn) continue;
+//  								tp=bs+jx;
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][5]]);
+//  								if(tresx===tres){
+//  									for(var jy=6,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 9;jy++){
+//  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[tpx][jy];
+//  											for(var jz=0;jz < 3;jz++){
+//  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[i][jz];
+//  													if((this.cells[pu-18].v&tres)||(this.cells[pv+18].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+//            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky+9*kx)){
+//  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][2]]);
+//  								if(tresx===tres){
+//  									for(var jy=6,tpx=bittonum(~((1 << tn)+(1 << jx)),3);jy < 9;jy++){
+//  										if((this.cells[this.bpjtn[tpx][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[tpx][jy];
+//  											for(var jz=3;jz < 6;jz++){
+//  												if((this.cells[this.bpjtn[i][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[i][jz];
+//  													if((this.cells[pu-9].v&tres)||(this.cells[pv+9].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("鱼雷战术v1：起始宫："+(tp+1)+"，目标格："+idxtocod(pu)+" "+idxtocod(pv)+"，数组"+tstr);
+//            								tbit=(1 << (px%9))|(1 << (py%9))|(1 << (pu%9))|(1 << (pv%9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky+9*kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky+9*kx)){
+//  																		this.logs.push("鱼雷战术v2：数组"+tstr+"--删除R"+(kx+1)+"C"+(ky+1)+"处的"+(kz+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  							}
+//  							return true;
+//  						}
+//  					}
+//  				}
+//  			}
+//  		}
+//  		tres=verijexc(this.cells[this.bpjtn[i][0]],this.cells[this.bpjtn[i][3]],this.cells[this.bpjtn[i][6]],ib);
+//  		if(tres!=0){
+//  			var tn = Math.floor(i/3);
+//  			var bs = i%3;
+//  			for(var jx=0;jx < 3;jx++){
+//  				if(jx===tn) continue;
+//  				for(var jy=1;jy < 8;jy+=3){
+//  					if((this.cells[this.bpjtn[jx*3+bs][jy]].v&tres)===tres){
+//  						px=this.bpjtn[jx*3+bs][jy];
+//  						for(var jz=2,tp=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
+//  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
+//  								py=this.bpjtn[tp][jz];
+//  								if((this.cells[px+1].v&tres)||(this.cells[py-1].v&tres)) break;
+//  								for(var k=0,tstr="";k < 9;k++){
+//  									if((1 << k)&tres){
+//  										tstr+=(k+1)+" ";
+//  										continue;
+//  									}
+//  									if(this.delcan(k,px)) tret=true;
+//  									if(this.delcan(k,py)) tret=true;
+//  								}
+//  							}
+//  						}
+//  						if(tret){
+//  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
+//  							for(var jx=0;jx < 3;jx++){
+//  								if(jx===tn) continue;
+//  								tp=jx*3+bs;
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][7]]);
+//  								if(tresx===tres){
+//  									for(var jy=2;jy < 9;jy+=3){
+//  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[i][jy];
+//  											for(var jz=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 7;jz+=3){
+//  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[tpx][jz];
+//  													if((this.cells[pu-2].v&tres)||(this.cells[pv+2].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky*9+kx)){
+//  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][2]],this.cells[this.bpjtn[tp][5]],this.cells[this.bpjtn[tp][8]]);
+//  								if(tresx===tres){
+//  									for(var jy=1;jy < 8;jy+=3){
+//  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[i][jy];
+//  											for(var jz=0,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 7;jz+=3){
+//  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[tpx][jz];
+//  													if((this.cells[pu-1].v&tres)||(this.cells[pv+1].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky*9+kx)){
+//  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  							}
+//  							return true;
+//  						}
+//  					}
+//  				}
+//  			}
+//  		}
+//  		tres=verijexc(this.cells[this.bpjtn[i][1]],this.cells[this.bpjtn[i][4]],this.cells[this.bpjtn[i][7]],ib);
+//  		if(tres!=0){
+//  			var tn = Math.floor(i/3);
+//  			var bs = i%3;
+//  			for(var jx=0;jx < 3;jx++){
+//  				if(jx===tn) continue;
+//  				for(var jy=0;jy < 7;jy+=3){
+//  					if((this.cells[this.bpjtn[jx*3+bs][jy]].v&tres)===tres){
+//  						px=this.bpjtn[jx*3+bs][jy];
+//  						for(var jz=2,tp=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
+//  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
+//  								py=this.bpjtn[tp][jz];
+//  								if((this.cells[px+2].v&tres)||(this.cells[py-2].v&tres)) break;
+//  								for(var k=0,tstr="";k < 9;k++){
+//  									if((1 << k)&tres){
+//  										tstr+=(k+1)+" ";
+//  										continue;
+//  									}
+//  									if(this.delcan(k,px)) tret=true;
+//  									if(this.delcan(k,py)) tret=true;
+//  								}
+//  							}
+//  						}
+//  						if(tret){
+//  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
+//  							for(var jx=0;jx < 3;jx++){
+//  								if(jx===tn) continue;
+//  								tp=jx*3+bs;
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][2]],this.cells[this.bpjtn[tp][5]],this.cells[this.bpjtn[tp][8]]);
+//  								if(tresx===tres){
+//  									for(var jy=0;jy < 7;jy+=3){
+//  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[i][jy];
+//  											for(var jz=1,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 8;jz+=3){
+//  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[tpx][jz];
+//  													if((this.cells[pu+1].v&tres)||(this.cells[pv-1].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky*9+kx)){
+//  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][6]]);
+//  								if(tresx===tres){
+//  									for(var jy=2;jy < 9;jy+=3){
+//  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[i][jy];
+//  											for(var jz=1,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 8;jz+=3){
+//  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[tpx][jz];
+//  													if((this.cells[pu-1].v&tres)||(this.cells[pv+1].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky*9+kx)){
+//  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  							}
+//  							return true;
+//  						}
+//  					}
+//  				}
+//  			}
+//  		}
+//  		tres=verijexc(this.cells[this.bpjtn[i][2]],this.cells[this.bpjtn[i][5]],this.cells[this.bpjtn[i][8]],ib);
+//  		if(tres!=0){
+//  			var tn = Math.floor(i/3);
+//  			var bs = i%3;
+//  			for(var jx=0;jx < 3;jx++){
+//  				if(jx===tn) continue;
+//  				for(var jy=0;jy < 7;jy+=3){
+//  					if((this.cells[this.bpjtn[jx*3+bs][jy]].v&tres)===tres){
+//  						px=this.bpjtn[jx*3+bs][jy];
+//  						for(var jz=1,tp=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 8;jz+=3){
+//  							if((this.cells[this.bpjtn[tp][jz]].v&tres)===tres){
+//  								py=this.bpjtn[tp][jz];
+//  								if((this.cells[px+1].v&tres)||(this.cells[py-1].v&tres)) break;
+//  								for(var k=0,tstr="";k < 9;k++){
+//  									if((1 << k)&tres){
+//  										tstr+=(k+1)+" ";
+//  										continue;
+//  									}
+//  									if(this.delcan(k,px)) tret=true;
+//  									if(this.delcan(k,py)) tret=true;
+//  								}
+//  							}
+//  						}
+//  						if(tret){
+//  							this.logs.push("Junior Exocet: base cells are in block "+(i+1)+". Target cells: "+idxtocod(px)+" "+idxtocod(py)+", matched number set: "+tstr);
+//  							for(var jx=0;jx < 3;jx++){
+//  								if(jx===tn) continue;
+//  								tp=jx*3+bs;
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][0]],this.cells[this.bpjtn[tp][3]],this.cells[this.bpjtn[tp][6]]);
+//  								if(tresx===tres){
+//  									for(var jy=1;jy < 8;jy+=3){
+//  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[i][jy];
+//  											for(var jz=2,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
+//  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[tpx][jz];
+//  													if((this.cells[pu+1].v&tres)||(this.cells[pv-1].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky*9+kx)){
+//  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  								tresx=verijexc(this.cells[this.bpjtn[tp][1]],this.cells[this.bpjtn[tp][4]],this.cells[this.bpjtn[tp][7]]);
+//  								if(tresx===tres){
+//  									for(var jy=0;jy < 7;jy+=3){
+//  										if((this.cells[this.bpjtn[i][jy]].v&tres)===tres){
+//  											pu=this.bpjtn[i][jy];
+//  											for(var jz=2,tpx=bittonum(~((1 << tn)+(1 << jx)),3)*3+bs;jz < 9;jz+=3){
+//  												if((this.cells[this.bpjtn[tpx][jz]].v&tres)===tres){
+//  													pv=this.bpjtn[tpx][jz];
+//  													if((this.cells[pu+2].v&tres)||(this.cells[pv-2].v&tres)) return true;
+//  													for(var k=0;k < 9;k++){
+//            									if((1 << k)&tres) continue;
+//            									this.delcan(k,pu);
+//            									this.delcan(k,pv);
+//            								}
+//            								this.logs.push("Junior Exocet: base cells are in block "+(tp+1)+". Target cells: "+idxtocod(pu)+" "+idxtocod(pv)+", matched number set: "+tstr);
+//  													tbit=(1 << Math.floor(px/9))|(1 << Math.floor(py/9))|(1 << Math.floor(pu/9))|(1 << Math.floor(pv/9));
+//  													for(var kx=0;kx < 9;kx++){
+//  														if(kx===3*(i%3)){
+//  															kx+=3;continue;
+//  														}
+//  														for(var ky=0,ebit=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit){
+//  																ebit=ebit|(this.cells[ky*9+kx].v&tres);
+//  															}
+//  														}
+//  														for(var ky=0;ky < 9;ky++){
+//  															if((1 << ky)&tbit) continue;
+//  															for(var kz=0;kz < 9;kz++){
+//  																if((1 << kz)&ebit){
+//  																	if(this.delcan(kz,ky*9+kx)){
+//  																		this.logs.push("Double Exocet: delete "+(kz+1)+" at "+"R"+(ky+1)+"C"+(kx+1));
+//  																	}
+//  																}
+//  															}
+//  														}
+//  													}
+//  													return true;
+//  												}
+//  											}
+//  										}
+//  									}
+//  								}
+//  							}
+//  							return true;
+//  						}
+//  					}
+//  				}
+//  			}
+//  		}
+//  	}
+//  	return false;
+//  }
   
   this.dfsy = function(){
   	if(!this.isvalid) return false;
@@ -2429,7 +2429,9 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		return this.solveFF();
   		case 12:
   		//Junior Exocet
-  		return this.solveJE();
+  		//The detection logic was wrong
+  		//return this.solveJE();
+  		return false;
   		case 13:
   		//weak DFS
   		return this.solveST();
