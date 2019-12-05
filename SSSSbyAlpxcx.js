@@ -273,8 +273,8 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
 			//Find locked candidates
 			this.BLRD(r,c,b,num);
 			this.findXW(r,c,num);
-			//this.findSSF(r,c,num);
-			//this.findSF(r,c,num);
+			this.findSSF(r,c,num);
+			this.findSF(r,c,num);
 			this.findSNT(r,c,b);
 			this.findNT(r,c,b);
 			this.findHT(r,c,b,num);
@@ -784,9 +784,9 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		}
   		if(matched){
   			sp1=bittonum(this.rnst[r].mem[num].v,9);
-  			sp2=sp1+bittonum(this.rnst[r].mem[num].v >> (sp1+1),8-sp1);
-  			sp3=sp2+bittonum(this.rnst[r].mem[num].v >> (sp2+1),8-sp2);
-  			this.sflist.push([num,r,sr1,i,sp1,sp2,sp3,1]);
+  			sp2=sp1+1+bittonum(this.rnst[r].mem[num].v >> (sp1+1),8-sp1);
+  			sp3=sp2+1+bittonum(this.rnst[r].mem[num].v >> (sp2+1),8-sp2);
+  			this.sflist.push([num,r,sr1,i-1,sp1,sp2,sp3,1]);
   		}
   	}
   	if(this.cnst[c].mem[num].can==3&&!matched){
@@ -804,9 +804,9 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		}
   		if(matched){
   			sp1=bittonum(this.cnst[c].mem[num].v,9);
-  			sp2=sp1+bittonum(this.cnst[c].mem[num].v >> (sp1+1),8-sp1);
-  			sp3=sp2+bittonum(this.cnst[c].mem[num].v >> (sp2+1),8-sp2);
-  			this.sflist.push([num,r,sc1,i,sp1,sp2,sp3,2]);
+  			sp2=sp1+1+bittonum(this.cnst[c].mem[num].v >> (sp1+1),8-sp1);
+  			sp3=sp2+1+bittonum(this.cnst[c].mem[num].v >> (sp2+1),8-sp2);
+  			this.sflist.push([num,r,sc1,i-1,sp1,sp2,sp3,2]);
   		}
   	}
   }
@@ -1267,23 +1267,23 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   	var res=false;
   	for(;this.sflist.length >0;){
   	  temp = this.sflist.shift();
-  	  mchc=0;
-  		tbit=(1 << temp[1])+(1 << temp[2])+(1 << temp[3]);
+//  	  mchc=0;
+//  		tbit=(1 << temp[1])+(1 << temp[2])+(1 << temp[3]);
   		tbitx=(1 << temp[4])+(1 << temp[5])+(1 << temp[6]);
-  		if(tbit&0007) mchc++;
-  		if(tbit&0070) mchc++;
-  		if(tbit&0700) mchc++;
-  		if(tbitx&0007) mchc++;
-  		if(tbitx&0070) mchc++;
-  		if(tbitx&0700) mchc++;
-  		if(mchc < 4) continue;
+//  		if(tbit&0007) mchc++;
+//  		if(tbit&0070) mchc++;
+//  		if(tbit&0700) mchc++;
+//  		if(tbitx&0007) mchc++;
+//  		if(tbitx&0070) mchc++;
+//  		if(tbitx&0700) mchc++;
+//  		if(mchc < 4) continue;
   	  if(temp[7]==1){
   	  	tres=false;
   			if(this.rnst[temp[1]].mem[temp[0]].isfilled) continue;
   			if(this.rnst[temp[2]].mem[temp[0]].isfilled) continue;
   			if(this.rnst[temp[3]].mem[temp[0]].isfilled) continue;
   	  	for(var i=0;i < 9;i++){
-  	  		if((1 << i)&tbit) continue;
+  	  		if((1 << i)&tbitx) continue;
   	  		if(this.delcan(temp[0],temp[4]+9*i)) tres=true;
   	  		if(this.delcan(temp[0],temp[5]+9*i)) tres=true;
   	  		if(this.delcan(temp[0],temp[6]+9*i)) tres=true;
@@ -1297,7 +1297,7 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   			if(this.cnst[temp[2]].mem[temp[0]].isfilled) continue;
   			if(this.cnst[temp[3]].mem[temp[0]].isfilled) continue;
   	  	for(var i=0;i < 9;i++){
-  	  		if((1 << i)&tbit) continue;
+  	  		if((1 << i)&tbitx) continue;
   	  		if(this.delcan(temp[0],temp[4]*9+i)) tres=true;
   	  		if(this.delcan(temp[0],temp[5]*9+i)) tres=true;
   	  		if(this.delcan(temp[0],temp[6]*9+i)) tres=true;
@@ -2417,8 +2417,6 @@ function sd9(consoleSwitch=true,ogn=true,level=15){
   		return this.solveXW();
   		case 8:
   		//Swordfish
-  		//unfortunately a bug is found here so I have to disable it
-  		return false;
   		return this.solveSF();
   		case 9:
   		//Y-Wing
